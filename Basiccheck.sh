@@ -1,36 +1,38 @@
 #! /bin/bash
 path=$1
 file=$2
-
+value=0
 cd $path
-make
+make > /dev/null 2>&1
 Test=$?
 if [ $Test -gt 0 ]
 	then
     firstCheck=1
-     exit 111
+     exit 7
 
  else 
      firstCheck=0
-     valgrind --tool=memcheck --leak-check=full --error-exitcode=3 -q ./$file &> /dev/null
+     valgrind --tool=memcheck --leak-check=full --error-exitcode=3 -q ./$file >  /dev/null 2>&1
 	 Test=$?
 
     if [ $Test -gt 0 ]
 		then
 		secondCheck=1 
-		exit 011
+		value+=2
+		
 		else
 		secondCheck=0 
 	fi 
 
 
-    valgrind --tool=helgrind -q ./$file &> /dev/null
+    valgrind --tool=helgrind --error-exitcode=3 -q ./$file > /dev/null 2>&1
 	Test=$?
 
 	if [ $Test -gt 0 ]
 		then
 		thirdCheck=1
-		exit 001
+		value+=1
+
 		else
 		thirdCheck=0
 	fi
@@ -39,27 +41,27 @@ fi
 
 if [ $firstCheck -eq 0 ]
 	then
-	comp=pass
+	comp=PASS
 	else
-	comp=fail
+	comp=FAIL
 fi
 
 if [ $secondCheck -eq 0 ]
 	then
-	memLeak=pass
+	memLeak=PASS
 	else
-	memLeak=fail
+	memLeak=FAIL
 fi
 
 if [ $thirdCheck -eq 0 ]
 	then
-	thRace=pass
+	thRace=PASS
 	else
-	thRace=fail
+	thRace=FAIL
 fi
 
 echo "Basiccheck.sh $path $file
 Compiltion		Memory Leak		Thread Race
 $comp			$memLeak			$thRace"
-
-exit 000
+echo "The returned value is :" $value
+exit $value

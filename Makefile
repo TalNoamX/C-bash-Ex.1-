@@ -1,2 +1,2 @@
 main.o: *.cpp
-	g++ *.cpp
+	g++ *.cpp -lpthread

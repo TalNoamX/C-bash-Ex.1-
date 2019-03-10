@@ -8,6 +8,9 @@ Test=$?
 if [ $Test -gt 0 ]
 	then
     firstCheck=1
+	echo "Basiccheck.sh $path $file
+Compiltion		Memory Leak		Thread Race
+FAIL			FAIL			FAIL"
      exit 7
 
  else 
@@ -18,7 +21,7 @@ if [ $Test -gt 0 ]
     if [ $Test -gt 0 ]
 		then
 		secondCheck=1 
-		value+=2
+		((value=$value+2))
 		
 		else
 		secondCheck=0 
@@ -31,7 +34,7 @@ if [ $Test -gt 0 ]
 	if [ $Test -gt 0 ]
 		then
 		thirdCheck=1
-		value+=1
+		((value=$value+1))
 
 		else
 		thirdCheck=0
